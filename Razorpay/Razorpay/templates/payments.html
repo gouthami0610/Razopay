@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Logs</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="containers">
+        <div class="card">
+            <h1>Payment Logs</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Payment ID</th>
+                        <th>Amount (INR)</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                    <tr>
+                        <td>{{ payment[0] }}</td>
+                        <td>{{ payment[1] or 'N/A' }}</td>
+                        <td>{{ "%.2f"|format(payment[2]/100) }}</td>
+                        <td class="status {{ payment[3] }}">{{ payment[3] }}</td>
+                        <td>{{ payment[4] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/" class="btn">Back to Payment</a>
+             <a href="/viewBlocks" class="btn">View Block Details</a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Success</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="card success">
+            <h1>Payment Successful!</h1>
+            <p>Thank you for your payment. Your transaction has been completed successfully.</p>
+            <a href="/" class="btn">Make Another Payment</a>
+            <a href="/payments" class="btn">View Payment Logs</a>
+             <a href="/viewBlocks" class="btn">View Block Details</a>
+        </div>
+    </div>
+</body>
+</html>

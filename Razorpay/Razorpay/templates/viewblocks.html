@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Block Details</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="containerss">
+        <div class="card">
+            <h1>Block Details</h1>
+            <table>
+                <thead>
+                    <tr>
+                     
+                        <th> ID</th>
+                        <th>Block No</th>
+                        <th>Block Data</th>
+                        <th>Keys</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for block in blocks %}
+                    <tr>
+                        <td>{{ block[0] }}</td>
+                        <td>{{ block[1] }}</td>
+                        <td>{{ block[2] }}</td>
+                        <td>{{ block[3] }}</td> 
+                        <td class="status {{ block[4] }}">{{ block[4] }}</td>
+                        <td>{{ block[5] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <a href="/" class="btn">Back to Payment</a>
+        </div>
+    </div>
+</body>
+</html>

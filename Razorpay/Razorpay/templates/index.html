@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Razorpay Payment</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Razorpay Payment Gateway</h1>
+            <form id="payment-form">
+                <div class="form-group">
+                    <label for="amount">Amount (INR):</label>
+                    <input type="number" id="amount" name="amount" min="1" required placeholder="Enter amount">
+                </div>
+                <button type="submit" class="pay-btn">Pay Now</button>
+            </form>
+            <div id="loading" style="display: none;">Processing...</div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('payment-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const amount = document.getElementById('amount').value;
+            if (!amount || amount < 1) {
+                alert('Please enter a valid amount');
+                return;
+            }
+            
+            document.getElementById('loading').style.display = 'block';
+            
+            fetch('/create_order', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: 'amount=' + amount
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                
+                const options = {
+                    key: '{{ key_id }}',
+                    amount: data.amount,
+                    currency: 'INR',
+                    order_id: data.order_id,
+                    name: 'Your Company Name',
+                    description: 'Payment for services',
+                    handler: function (response) {
+                        // Verify payment on backend
+                        fetch('/verify', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature
+                            })
+                        })
+                        .then(res => res.json())
+                        .then(verifyData => {
+                            if (verifyData.status === 'success') {
+                                window.location.href = '/success';
+                            } else {
+                                window.location.href = '/failure';
+                            }
+                        });
+                    },
+                    prefill: {
+                        name: 'Customer Name',
+                        email: 'customer@example.com',
+                        contact: '9999999999'
+                    },
+                    theme: {
+                        color: '#3498db'
+                    }
+                };
+                
+                const rzp = new Razorpay(options);
+                rzp.open();
+            })
+            .catch(error => {
+                document.getElementById('loading').style.display = 'none';
+                alert('Error creating order');
+                console.error(error);
+            });
+        });
+    </script>
+</body>
+</html>
